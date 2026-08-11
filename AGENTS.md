@@ -2,48 +2,29 @@
 
 ## Project Structure & Module Organization
 
-This repository currently contains project documentation only. As the Express + React application is added, keep the codebase split by runtime:
-
-```text
-client/          # React UI, components, styles, and static assets
-server/          # Express app, routes, middleware, and API logic
-client/src/      # Frontend source modules
-server/tests/    # Backend tests
-client/src/**/*.test.*  # Frontend tests, colocated where practical
-```
-
-Keep reusable UI in `client/src/components/`, page-level views in `client/src/pages/`, and API routes in `server/routes/`. Avoid mixing browser code with server code.
+LinkWeb is a full-stack URL shortener. The Express backend lives in `server/`, with routes in `server/src/server.js`, in-memory storage in `server/src/store.js`, and backend tests in `server/test/`. The React frontend lives in `web/`, with app code in `web/src/`. Integration examples and test planning live in `tests/integration/` and `docs/`.
 
 ## Build, Test, and Development Commands
 
-Run commands from the relevant application directory once `client/package.json` and `server/package.json` exist:
-
-```bash
-cd client && npm install && npm run dev    # Start the React development server
-cd client && npm run build                 # Create a production frontend build
-cd server && npm install && npm run dev    # Start Express with development reloads
-cd server && npm start                     # Run Express in production mode
-npm test                                   # Run the package's configured tests
-```
-
-Check each package's `package.json` before adding or changing scripts. Do not assume a tool is installed without declaring it in dependencies.
+- `npm install --prefix server` - install backend dependencies.
+- `npm install --prefix web` - install frontend dependencies.
+- `npm run dev` - run the API and Vite frontend together.
+- `npm start` - start the Express API only.
+- `npm test` - run backend tests and skipped-by-default integration examples.
+- `npm run build` - build the React frontend.
 
 ## Coding Style & Naming Conventions
 
-Use 2-space indentation for JavaScript, JSON, and CSS. Prefer semicolons and single quotes unless the existing formatter says otherwise. Name React components in `PascalCase` (for example, `UserProfile.jsx`); use `camelCase` for functions and variables; and use descriptive kebab-case filenames only for non-component assets (for example, `user-avatar.png`).
-
-Keep Express routes resource-focused, such as `server/routes/users.js`, and export small, testable handlers. If ESLint or Prettier is introduced, run it before committing and do not hand-format against its output.
+Use ES modules and modern JavaScript. Keep indentation at 2 spaces. Use `camelCase` for variables and functions, `PascalCase` for React components, and descriptive file names such as `App.jsx`, `server.js`, or `store.js`. API responses should always be shaped as `{ "data": ... }` or `{ "error": ... }`.
 
 ## Testing Guidelines
 
-Add tests with each behavior change. Use the test framework configured in the relevant package and name files `*.test.js`, `*.test.jsx`, or the convention already used there. Cover successful behavior, invalid input, and API error responses. Run the applicable `npm test` command before opening a pull request.
+Tests use Node's built-in runner with `node --test`. Add backend route tests in `server/test/` when behavior changes. Keep black-box integration examples in `tests/integration/`; they are skipped unless the related `RUN_*` environment variable is set.
 
 ## Commit & Pull Request Guidelines
 
-The existing history uses concise imperative commits: `Add project README`. Follow that style, for example `Add user login route` or `Fix profile form validation`.
+The current history uses concise imperative commits, such as `Initial commit`. Continue with messages like `Add shorten endpoint` or `Build React shortener UI`. Pull requests should include a short summary, test results, setup notes, and screenshots for UI changes.
 
-Keep commits focused. Pull requests should state what changed, why, and how it was tested; link related issues when available. Include screenshots or short recordings for visible React UI changes, and note any required environment variables or migration steps.
+## Security & Configuration Tips
 
-## Security & Configuration
-
-Store secrets in untracked `.env` files, never in client-side source code or commits. Document required variable names in `.env.example` without real values.
+Do not commit `.env` files or secrets. Use `PORT` and `BASE_URL` for backend configuration. The current store is in-memory, so links reset when the server restarts.
